@@ -1,18 +1,16 @@
-import Footer from "./layout/Footer";
-import Header from "./layout/Header";
-import TodoList from "./pages/TodoList";
+import Footer from './layout/Footer';
+import TodoRegist from "./pages/regist/TodoRegist";
 
 function App() {
   return (
     <>
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-screen bg-[#e8e8e8]">
         <div
           id="app"
-          className="w-[390px] h-[815px] bg-[#383cc2] rounded-[30px]"
+          className="w-[390px] bg-[#383cc2] rounded-[30px]"
         >
-          <Header />
-          <TodoList />
-          <Footer />
+          <TodoRegist />
+          <Footer/>
         </div>
       </div>
     </>
