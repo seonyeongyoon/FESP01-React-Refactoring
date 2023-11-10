@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import TodoUpdate from "./pages/update/TodoUpdate";
 import TodoList from "./pages/TodoList";
+import TodoRegist from './pages/regist/TodoRegist';
 function App() {
   return (
     <>
@@ -11,8 +12,9 @@ function App() {
         >
           <Routes>
             <Route>
-              <Route path="/" element={<TodoList />} />
+              <Route path="/list" element={<TodoList />} />
               <Route path="/update" element={<TodoUpdate />} />
+              <Route path="/regist" element={<TodoRegist />} />
             </Route>
           </Routes>
         </div>
