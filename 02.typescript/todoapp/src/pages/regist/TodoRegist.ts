@@ -1,11 +1,14 @@
 // 할일 등록
-import Header from "../../layout/Header.js";
-import Footer from "../../layout/Footer.js";
-import Nav from "../../layout/nav.js";
+import axios from "axios";
+import Header from "../../layout/Header";
+import Footer from "../../layout/Footer";
+import Nav from "../../layout/Nav";
+import { linkTo } from "../../Router";
 
-const TodoRegist = function () {
+const TodoRegist = function (): HTMLElement {
   const page = document.createElement("div");
-  page.setAttribute("id", "regist");
+  page.setAttribute("id", "app");
+  page.setAttribute("class", "regist");
 
   const content = document.createElement("div");
   content.id = "content";
@@ -53,19 +56,21 @@ const TodoRegist = function () {
   const addButton = document.createElement("button");
   addButton.className = "addButton";
   const addText = document.createTextNode("추가하기");
-  addText.className = "addText";
+  // addText.className = "addText";
+  addButton.type = "button";
   addButton.appendChild(addText);
   form.appendChild(addButton);
 
   addButton.addEventListener("click", async () => {
-    response = await axios
-      .post("http://localhost:33088/api/todolist", {
+    await axios
+      .post<TodoItem>("http://localhost:33088/api/todolist", {
         title: titleInput.value,
         content: detailInput.value,
         done: false,
       })
       .then(function (response) {
         console.log(response);
+        linkTo("/");
       })
       .catch(function (error) {
         console.log(error);

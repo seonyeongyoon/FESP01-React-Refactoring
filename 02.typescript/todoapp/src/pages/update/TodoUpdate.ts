@@ -1,16 +1,21 @@
 // 할일 수정
-import Header from "../../layout/Header.js";
-import Footer from "../../layout/Footer.js";
-import Nav from "../../layout/nav.js";
+import Header from "../../layout/Header";
+import Footer from "../../layout/Footer";
+import Nav from "../../layout/Nav";
+import axios from "axios";
+import { linkTo } from "../../Router";
 
-const TodoUpdate = async function ({
-  _id,
-  updateTitle,
-  updateContent,
-  done = false,
-}) {
+
+const TodoUpdate = async function (): Promise<HTMLElement> {
+  // 쿼리스트링 값 가져오기
+  const searchParam = (key: string): string | null => {
+    return new URLSearchParams(location.search).get(key);
+  }
+  const _id = searchParam('_id');
+
   const page = document.createElement("div");
-  page.setAttribute("id", "update");
+  page.setAttribute("id", "app");
+  page.setAttribute("class", "update");
 
   const content = document.createElement("div");
   content.id = "content";
@@ -22,6 +27,13 @@ const TodoUpdate = async function ({
   const form = document.createElement("form");
   form.className = "form";
   wrapper.appendChild(form);
+
+  const response = await axios<TodoResponse>(`http://localhost:33088/api/todolist/${_id}`);
+  const data = response.data.item;
+
+  const updateTitle = data.title;
+  const updateContent = data.content;
+  const done = data.done;
 
   //제목 입력창
   const titleBox = document.createElement("div");
@@ -72,8 +84,8 @@ const TodoUpdate = async function ({
   checkInput.checked = done;
 
   // 체크박스 토글기능;
-  checkInput.addEventListener("click", function () {
-    let checked = checkInput.checked;
+  checkInput.addEventListener("click", (e: MouseEvent) => {
+    let checked = (e.target as HTMLInputElement).checked;
     if (!checked) {
       checked = true;
     } else {
@@ -84,39 +96,45 @@ const TodoUpdate = async function ({
   // 수정하기 버튼
   const addButton = document.createElement("button");
   addButton.className = "addButton";
+  addButton.type = "button";
   const addText = document.createTextNode("수정 완료하기");
-  addText.className = "addText";
+  // addText.className = "addText";
   addButton.appendChild(addText);
   form.appendChild(addButton);
 
-  addButton.addEventListener("click", async () => {
-    response = await axios
-      .patch(`http://localhost:33088/api/todolist/${_id}`, {
+  try {
+    addButton?.addEventListener("click", async() => {
+      const body = {
         title: titleInput.value,
         content: detailInput.value,
         done: checkInput.checked,
-      })
-      .then(function (response) {
+      }
+      await axios.patch<TodoResponse>(`http://localhost:33088/api/todolist/${_id}`, body).then((response) => {
         console.log(response);
-      })
-      .catch(function (error) {
+        linkTo(`/info?_id=${_id}`);
+      }).catch((error) => {
         console.log(error);
-      });
-  });
+      })
+    });
+  } catch(error) {
+    console.error(error);
+  }
 
   // 삭제하기 버튼
   const deleteButton = document.createElement("button");
   deleteButton.className = "deleteButton";
+  deleteButton.type = "button";
   const deleteText = document.createTextNode("삭제하기");
-  deleteText.className = "deleteText";
+  // deleteText.className = "deleteText";
   deleteButton.appendChild(deleteText);
   form.appendChild(deleteButton);
 
-  deleteButton.addEventListener("click", async () => {
-    response = await axios
+  deleteButton?.addEventListener("click", async () => {
+    await axios
       .delete(`http://localhost:33088/api/todolist/${_id}`)
       .then(function (response) {
         console.log(response);
+        linkTo(`/`);
       })
       .catch(function (error) {
         console.log(error);
